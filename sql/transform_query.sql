@@ -1,0 +1,71 @@
+create or replace table {table_name} as
+with null_handled as (
+        select
+            c.crash_date as crash_date,
+            CAST(split_part(c.crash_time, ':', 1) AS INTEGER) AS crash_hour,
+            CAST(split_part(c.crash_time, ':', 2) AS INTEGER) AS crash_minute,
+            coalesce(c.borough, '') as borough,
+            coalesce(cast(cast(c.zip_code as integer) as varchar), '') as zip_code,
+            coalesce(c.latitude, 0.0) as latitude,
+            coalesce(c.longitude, 0.0) as longitude,
+            coalesce(c.on_street_name, '') as on_street_name,
+            coalesce(c.off_street_name, '') as off_street_name,
+            coalesce(c.cross_street_name, '') as cross_street_name,
+            coalesce(c.number_of_persons_injured, 0) as number_of_persons_injured,
+            coalesce(c.number_of_persons_killed, 0) as number_of_persons_killed,
+            coalesce(c.number_of_pedestrians_injured, 0) as number_of_pedestrians_injured,
+            coalesce(c.number_of_pedestrians_killed, 0) as number_of_pedestrians_killed,
+            coalesce(c.number_of_cyclist_injured, 0) as number_of_cyclist_injured,
+            coalesce(c.number_of_cyclist_killed, 0) as number_of_cyclist_killed,
+            coalesce(c.number_of_motorist_injured, 0) as number_of_motorist_injured,
+            coalesce(c.number_of_motorist_killed, 0) as number_of_motorist_killed,
+            coalesce(c.contributing_factor_vehicle_1, 'Unspecified') as contributing_factor_vehicle_1,
+            coalesce(c.contributing_factor_vehicle_2, 'Unspecified') as contributing_factor_vehicle_2,
+            coalesce(c.contributing_factor_vehicle_3, 'Unspecified') as contributing_factor_vehicle_3,
+            coalesce(c.contributing_factor_vehicle_4, 'Unspecified') as contributing_factor_vehicle_4,
+            coalesce(c.contributing_factor_vehicle_5, 'Unspecified') as contributing_factor_vehicle_5,
+            c.collision_id as collision_id,
+            coalesce(vehicle_type_code1, '') as vehicle_type_code1,
+            coalesce(vehicle_type_code2, '') as vehicle_type_code2,
+            coalesce(vehicle_type_code_3, '') as vehicle_type_code_3,
+            coalesce(vehicle_type_code_4, '') as vehicle_type_code_4,
+            coalesce(vehicle_type_code_5, '') as vehicle_type_code_5
+        from collisions c
+    )
+select 
+        cast(substr(c.crash_date,0,11) as DATE) as crash_date,
+        c.crash_hour,
+        c.crash_minute,
+        c.borough,
+        c.zip_code,
+        c.latitude,
+        c.longitude,
+        c.on_street_name,
+        c.off_street_name,
+        c.cross_street_name,
+        c.number_of_persons_injured,
+        c.number_of_persons_killed,
+        c.number_of_pedestrians_injured,
+        c.number_of_pedestrians_killed,
+        c.number_of_cyclist_injured,
+        c.number_of_cyclist_killed,
+        c.number_of_motorist_injured,
+        c.number_of_motorist_killed,
+        c.contributing_factor_vehicle_1,
+        c.contributing_factor_vehicle_2,
+        c.contributing_factor_vehicle_3,
+        c.contributing_factor_vehicle_4,
+        c.contributing_factor_vehicle_5,
+        c.collision_id,
+        c.vehicle_type_code1,
+        c.vehicle_type_code2,
+        c.vehicle_type_code_3,
+        c.vehicle_type_code_4,
+        c.vehicle_type_code_5,
+        h.localname AS holiday_name,
+        case when h.date is not null then true else false end as is_holiday
+    from null_handled c
+    left join (
+        select date, string_agg(localname) as localname from holidays group by 1
+    ) h
+    on substr(c.crash_date,0,11) = h.date

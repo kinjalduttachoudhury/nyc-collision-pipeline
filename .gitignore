@@ -1,0 +1,6 @@
+venv/
+raw_data/
+__pycache__/
+pipeline.duckdb
+pipeline.duckdb.wal
+*.pyc

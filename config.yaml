@@ -1,0 +1,25 @@
+data:
+  year: 2022
+  country: "US"
+
+apis:
+  collision:
+    base_url: "https://data.cityofnewyork.us/resource/h9gi-nx95.csv"
+    params:
+      query: "crash_date between '{year}-01-01T00:00:00' and '{year}-12-31T23:59:59'"
+  holiday:
+    base_url: "https://date.nager.at/api/v3/PublicHolidays/{year}/{country}"
+
+paths:
+  raw_data_dir: "raw_data"
+  output_dir: "output_data"
+  sql_queries_dir: "sql"
+  
+files:
+  collision_file: "collisions_{year}.parquet"
+  holiday_file: "holidays_{year}.parquet"
+  output_file: "transformed_data.parquet"
+  transform_query: "transform_query.sql"
+  
+database:
+  table_name: "transformed_data"
