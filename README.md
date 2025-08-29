@@ -24,6 +24,10 @@ python3 -m venv venv
 ```bash
 source venv/bin/activate
 ```
+- Install dependencies from `requirements.txt`
+```bash
+pip install -r requirements.txt
+```
 - We can run the pipeline in two different ways  
     - Run `main.py`       
         ```bash
