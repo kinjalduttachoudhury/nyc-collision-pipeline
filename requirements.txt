@@ -4,3 +4,4 @@ fastparquet
 duckdb==0.9.2
 pyyaml
 plotly
+jupyter
